@@ -1,3 +1,4 @@
+import AdminLayout from "../components/admin/AdminLayout";
 function AdminDashboard() {
   const orders =
     JSON.parse(localStorage.getItem("orders")) || [];
@@ -10,7 +11,7 @@ function AdminDashboard() {
   );
 
   return (
-    <>
+  <AdminLayout>
       <div className="bg-black min-h-screen text-white p-10">
 
         <h1 className="text-5xl text-yellow-500 font-bold mb-10">
@@ -44,7 +45,7 @@ function AdminDashboard() {
           View All Orders
         </a>
       </div>
-    </>
+     </AdminLayout>
   );
 }
 
