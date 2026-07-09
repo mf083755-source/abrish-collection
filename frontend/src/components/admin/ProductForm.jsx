@@ -1,13 +1,26 @@
 const ProductForm = ({
-  name, setName,
-  price, setPrice,
-  image, setImage,
-  category, setCategory,
-  description, setDescription,
-  stock, setStock,
+  name,
+  setName,
+  price,
+  setPrice,
+  salePrice,
+  setSalePrice,
+  sku,
+  setSku,
+  imageFile,
+  setImageFile,
+  preview,
+  setPreview,
+  category,
+  setCategory,
+  categories,
+  description,
+  setDescription,
+  stock,
+  setStock,
   addProduct,
   editingId,
-  resetForm
+  resetForm,
 }) => {
   return (
     <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 mb-8">
@@ -15,13 +28,19 @@ const ProductForm = ({
         {editingId ? "✏️ Edit Product" : "➕ Add New Product"}
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input
-          type="text"
-          placeholder="Product Name *"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 placeholder-gray-500"
-        />
+        <select
+  value={category}
+  onChange={(e) => setCategory(e.target.value)}
+  className="bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500"
+>
+  <option value="">Select Category</option>
+
+  {categories.map((cat) => (
+    <option key={cat.id} value={cat.name}>
+      {cat.name}
+    </option>
+  ))}
+</select>
         <input
           type="number"
           placeholder="Price *"
@@ -30,19 +49,40 @@ const ProductForm = ({
           className="bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 placeholder-gray-500"
         />
         <input
-          type="text"
-          placeholder="Image URL"
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
-          className="bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 placeholder-gray-500"
-        />
-        <input
-          type="text"
-          placeholder="Category *"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 placeholder-gray-500"
-        />
+  type="number"
+  placeholder="Sale Price"
+  value={salePrice}
+  onChange={(e) => setSalePrice(e.target.value)}
+  className="bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 placeholder-gray-500"
+/>
+        <div className="flex flex-col gap-3">
+  <label className="text-gray-300 font-medium">
+    Product Image
+  </label>
+
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => {
+      const file = e.target.files[0];
+
+      if (!file) return;
+
+      setImageFile(file);
+      setPreview(URL.createObjectURL(file));
+    }}
+    className="bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white"
+  />
+
+  {preview && (
+    <img
+      src={preview}
+      alt="Preview"
+      className="w-40 h-40 object-cover rounded-xl border border-zinc-700"
+    />
+  )}
+</div>
+        
         <input
           type="number"
           placeholder="Stock"

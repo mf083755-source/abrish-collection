@@ -18,6 +18,14 @@ export const productApi = {
   
   // Create product
   createProduct: (data) => api.post('/products', data),
+
+  // Upload Image
+uploadImage: (formData) =>
+  api.post("/upload", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  }),
   
   // Update product
   updateProduct: (id, data) => api.put(`/products/${id}`, data),

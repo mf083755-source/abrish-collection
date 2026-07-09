@@ -1,21 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import ProductCard from "../components/ProductCard";
-import products from "../data/products";
+import { productApi } from "../api/productApi";
 
 import CategoryFilter from "../components/CategoryFilter";
 
 function Shop() {
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
+    const [products, setProducts] = useState([]);
+    useEffect(() => {
+  fetchProducts();
+}, []);
+
+const fetchProducts = async () => {
+  try {
+    const response = await productApi.getProducts();
+    console.log("SHOP API:", response.data);
+
+    setProducts(response.data.products || []);
+  } catch (error) {
+    console.error("Failed to load products:", error);
+  }
+};
     const filteredProducts = products.filter((product) => {
-  const matchesSearch = product.name
-    .toLowerCase()
-    .includes(search.toLowerCase());
+  const matchesSearch = (product.title || "")
+  .toLowerCase()
+  .includes(search.toLowerCase());
 
   const matchesCategory =
-    category === "All" ||
-    product.category === category;
+  category === "All" ||
+  (product.category || "") === category;
 
   return matchesSearch && matchesCategory;
 });
@@ -46,12 +61,12 @@ function Shop() {
 
           {filteredProducts.map((product) => (
             <ProductCard
-              key={product.id}
-              id={product.id}
-              image={product.image}
-              name={product.name}
-              price={`PKR ${product.price}`}
-            />
+  key={product.id}
+  id={product.id}
+  image={product.featuredImage}
+  name={product.title}
+  price={`PKR ${product.price}`}
+ />
           ))}
 
         </div>

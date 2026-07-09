@@ -2,9 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from "fs";
 import { fileURLToPath } from 'url';
-import mongoose from 'mongoose';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 import productRoutes from './routes/productRoutes.js';
+import categoryRoutes from "./routes/categoryRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
 
 // ES Module fix for __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -15,25 +20,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// MongoDB Connection with Timeout Options
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 60000,
-      socketTimeoutMS: 60000,
-      connectTimeoutMS: 60000,
-    });
-    console.log('MongoDB Connected Successfully!');
-    console.log('Database:', mongoose.connection.db.databaseName);
-  } catch (error) {
-    console.log('MongoDB Connection Error:', error.message);
-    console.log('Running without MongoDB - using mock data');
-  }
-};
-
-// Connect to MongoDB
-connectDB();
-
 // Middleware
 app.use(cors({
   origin: ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5000'],
@@ -41,6 +27,17 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// Create uploads folder if it doesn't exist
+const uploadsPath = path.join(process.cwd(), "uploads");
+
+if (!fs.existsSync(uploadsPath)) {
+  fs.mkdirSync(path.join(uploadsPath, "products"), {
+    recursive: true,
+  });
+}
+
+// Serve uploaded images
+app.use("/uploads", express.static(uploadsPath));
 
 // ============================================
 // API ROUTES
@@ -48,6 +45,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Products API
 app.use('/api/products', productRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/upload", uploadRoutes);
 
 // Health Check
 app.get('/api/health', (req, res) => {
@@ -55,7 +54,7 @@ app.get('/api/health', (req, res) => {
     status: 'OK', 
     message: 'Abrish Collection API is running',
     timestamp: new Date().toISOString(),
-    mongodb: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
+    database: "PostgreSQL (Neon)"
   });
 });
 

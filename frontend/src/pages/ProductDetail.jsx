@@ -1,20 +1,40 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
-import products from "../data/products";
+import { useEffect, useState } from "react";
+import { productApi } from "../api/productApi";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 
 function ProductDetail() {
 const { id } = useParams();
+const [product, setProduct] = useState(null);
+const [loading, setLoading] = useState(true);
 const [qty, setQty] = useState(1);
 
 const { addToCart } = useCart();
 const { addToWishlist } = useWishlist();
 
-const product = products.find(
-(item) => item.id === Number(id)
-);
+useEffect(() => {
+  const fetchProduct = async () => {
+    try {
+      const response = await productApi.getProduct(id);
+console.log(response.data);
+setProduct(response.data.product);
+setLoading(false);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      setLoading(false);
+    }
+  };
 
+  fetchProduct();
+}, [id]);
+if (loading) {
+  return (
+    <div className="bg-black text-white min-h-screen flex items-center justify-center">
+      Loading...
+    </div>
+  );
+}
 if (!product) {
 return ( <div className="bg-black text-white min-h-screen flex items-center justify-center">
 Product Not Found </div>
@@ -23,7 +43,12 @@ Product Not Found </div>
 
 const addQtyToCart = () => {
 for (let i = 0; i < qty; i++) {
-addToCart(product);
+addToCart({
+  id: product.id,
+  image: product.featuredImage,
+  name: product.title,
+  price: product.price,
+});
 }
 };
 
@@ -33,8 +58,8 @@ return ( <div className="bg-black text-white min-h-screen py-20">
 
     <div>
       <img
-        src={product.image}
-        alt={product.name}
+        src={product.featuredImage}
+        alt={product.title}
         className="w-full rounded-3xl border border-yellow-700"
       />
     </div>
@@ -46,7 +71,7 @@ return ( <div className="bg-black text-white min-h-screen py-20">
       </p>
 
       <h1 className="text-5xl font-bold mt-3">
-        {product.name}
+        {product.title}
       </h1>
 
       <p className="text-4xl text-yellow-500 font-bold mt-6">
@@ -91,11 +116,18 @@ return ( <div className="bg-black text-white min-h-screen py-20">
         </button>
 
         <button
-          onClick={() => addToWishlist(product)}
-          className="border border-pink-500 text-pink-500 px-8 py-4 rounded-xl"
-        >
-          ♥ Wishlist
-        </button>
+  onClick={() =>
+    addToWishlist({
+      id: product.id,
+      image: product.featuredImage,
+      name: product.title,
+      price: product.price,
+    })
+  }
+  className="border border-pink-500 text-pink-500 px-8 py-4 rounded-xl"
+>
+  ♥ Wishlist
+</button>
 
       </div>
 
@@ -106,7 +138,13 @@ return ( <div className="bg-black text-white min-h-screen py-20">
         </p>
 
         <p className="mt-2">
-          <strong>Availability:</strong> In Stock
+        <strong>Stock:</strong> {product.stock}
+        </p>
+
+
+        <p className="mt-2">
+        <strong>Availability:</strong>{" "}
+         {product.stock > 0 ? "In Stock" : "Out of Stock"}
         </p>
 
       </div>

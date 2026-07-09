@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { productApi } from "../api/productApi";
+import { categoryApi } from "../api/categoryApi";
 import DashboardCards from "../components/admin/DashboardCards";
 import ProductForm from "../components/admin/ProductForm";
 import ProductSearch from "../components/admin/ProductSearch";
@@ -7,13 +8,18 @@ import ProductTable from "../components/admin/ProductTable";
 
 function AdminProducts() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
   // Form state
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [salePrice, setSalePrice] = useState("");
+  const [sku, setSku] = useState("");
   const [image, setImage] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [stock, setStock] = useState("");
@@ -28,6 +34,8 @@ function AdminProducts() {
     try {
       setLoading(true);
       const response = await productApi.getProducts();
+      console.log("API RESPONSE:", response.data);
+      console.log("PRODUCT COUNT:", response.data.products.length);
       setProducts(response.data.products || []);
       setError(null);
     } catch (err) {
@@ -40,19 +48,32 @@ function AdminProducts() {
       setLoading(false);
     }
   };
+  const fetchCategories = async () => {
+  try {
+    const response = await categoryApi.getCategories();
+    setCategories(response.data.categories || []);
+  } catch (err) {
+    console.error("Category Error:", err);
+  }
+};
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
-
+  fetchProducts();
+  fetchCategories();
+}, []);
   const resetForm = () => {
     setEditingId(null);
     setName("");
     setPrice("");
+    setSalePrice("");
+    setSku("");
     setImage("");
     setCategory("");
     setDescription("");
     setStock("");
+
+    setImageFile(null);
+    setPreview("");
   };
 
   const addProduct = async () => {
@@ -60,13 +81,31 @@ function AdminProducts() {
     alert("Please fill required fields.");
     return;
   }
+  console.log("IMAGE FILE:", imageFile);
+  let uploadedImage = "";
+console.log("IMAGE FILE:", imageFile);
+if (imageFile) {
 
+  const formData = new FormData();
+  formData.append("image", imageFile);
+  console.log("Uploading image...");
+  const uploadResponse = await productApi.uploadImage(formData);
+  console.log("UPLOAD RESPONSE:", uploadResponse.data);
+  console.log("IMAGE URL:", "http://localhost:5000" + uploadResponse.data.imageUrl);
+  console.log(uploadResponse.data);
+  console.log("UPLOAD RESPONSE:", uploadResponse.data);
+
+  uploadedImage =
+    "http://localhost:5000" + uploadResponse.data.imageUrl;
+}
   const productData = {
     title: name,
     price: Number(price),
+    salePrice: Number(salePrice) || 0,
+    sku,
     featuredImage:
-      image ||
-      "https://via.placeholder.com/400x400/C9A84C/FFFFFF?text=ABRISH",
+  uploadedImage ||
+  "https://via.placeholder.com/400x400/C9A84C/FFFFFF?text=ABRISH",
     category,
     description,
     stock: Number(stock) || 0,
@@ -88,7 +127,7 @@ function AdminProducts() {
     fetchProducts();
 
   } catch (err) {
-    console.error(err);
+    console.error("UPLOAD ERROR:", err);
 
     alert(
       err.response?.data?.message ||
@@ -182,22 +221,31 @@ function AdminProducts() {
 
         {/* Product Form */}
         <ProductForm
-          name={name}
-          setName={setName}
-          price={price}
-          setPrice={setPrice}
-          image={image}
-          setImage={setImage}
-          category={category}
-          setCategory={setCategory}
-          description={description}
-          setDescription={setDescription}
-          stock={stock}
-          setStock={setStock}
-          addProduct={addProduct}
-          editingId={editingId}
-          resetForm={resetForm}
-        />
+  name={name}
+  setName={setName}
+  price={price}
+  setPrice={setPrice}
+  salePrice={salePrice}
+  setSalePrice={setSalePrice}
+  sku={sku}
+  setSku={setSku}
+  imageFile={imageFile}
+  setImageFile={setImageFile}
+  preview={preview}
+  setPreview={setPreview}
+  category={category}
+  setCategory={setCategory}
+  categories={categories}
+  description={description}
+  setDescription={setDescription}
+  stock={stock}
+  setStock={setStock}
+  salePrice={salePrice}
+  setSalePrice={setSalePrice}
+  addProduct={addProduct}
+  editingId={editingId}
+  resetForm={resetForm}
+/>
 
         {/* Products Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -217,10 +265,10 @@ function AdminProducts() {
 
         {/* Product Table */}
         <ProductTable
-          products={filteredProducts}
-          editProduct={editProduct}
-          deleteProduct={deleteProduct}
-        />
+  products={filteredProducts}
+  editProduct={editProduct}
+  deleteProduct={deleteProduct}
+/>
       </div>
     </div>
   );

@@ -57,6 +57,12 @@ return ( <header className="sticky top-0 z-50 bg-black/95 backdrop-blur-md borde
         <Link to="/contact" className="hover:text-yellow-500">
           Contact
         </Link>
+        <Link
+  to="/admin-login"
+  className="bg-yellow-500 text-black px-4 py-2 rounded-lg font-semibold hover:bg-yellow-400"
+>
+  Admin
+</Link>
 
       </nav>
 

@@ -1,3 +1,5 @@
+import AdminLogin from "./pages/AdminLogin";
+import AdminCategories from "./pages/AdminCategories";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
@@ -32,6 +34,11 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/collections" element={<Collections />} />
         <Route path="/new-arrivals" element={<NewArrivals />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route
+           path="/admin-categories"
+          element={<AdminCategories />}
+         />
       </Routes>
     </BrowserRouter>
   );
