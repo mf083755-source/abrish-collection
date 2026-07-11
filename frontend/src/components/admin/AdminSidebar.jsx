@@ -5,6 +5,7 @@ import {
   ShoppingCart,
   Users,
   FolderTree,
+  Tag,
   BarChart3,
   Settings,
   LogOut,
@@ -31,6 +32,11 @@ const menus = [
     icon: FolderTree,
     path: "/admin-categories",
   },
+  {
+  name: "Brands",
+  icon: Tag,
+  path: "/admin-brands",
+},
   {
     name: "Customers",
     icon: Users,
