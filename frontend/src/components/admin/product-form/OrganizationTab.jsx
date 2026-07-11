@@ -24,7 +24,7 @@ function OrganizationTab({
         >
           <option value="">Select Category</option>
 
-          {categories.map((cat) => (
+         {(categories || []).map((cat) => (
             <option key={cat.id} value={cat.name}>
               {cat.name}
             </option>
@@ -46,7 +46,7 @@ function OrganizationTab({
         >
           <option value="">Select Brand</option>
 
-          {brands.map((item) => (
+          {(brands || []).map((item) => (
             <option key={item.id} value={item.name}>
               {item.name}
             </option>

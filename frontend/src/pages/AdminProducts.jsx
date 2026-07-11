@@ -81,6 +81,7 @@ const fetchBrands = async () => {
     setSku("");
     setImage("");
     setCategory("");
+    setBrand("");
     setDescription("");
     setStock("");
 
@@ -119,6 +120,7 @@ if (imageFile) {
   uploadedImage ||
   "https://via.placeholder.com/400x400/C9A84C/FFFFFF?text=ABRISH",
     category,
+    brand,
     description,
     stock: Number(stock) || 0,
     status: "Active",
@@ -153,6 +155,7 @@ if (imageFile) {
     setPrice(product.price);
     setImage(product.featuredImage || product.image);
     setCategory(product.category);
+    setBrand(product.brand || "");
     setDescription(product.description || "");
     setStock(product.stock);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -248,6 +251,9 @@ if (imageFile) {
   category={category}
   setCategory={setCategory}
   categories={categories}
+  brand={brand}
+  setBrand={setBrand}
+  brands={brands}
   description={description}
   setDescription={setDescription}
   stock={stock}
