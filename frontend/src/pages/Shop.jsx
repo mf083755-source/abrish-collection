@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import ProductCard from "../components/ProductCard";
 import { productApi } from "../api/productApi";
+import { categoryApi } from "../api/categoryApi";
 
 import CategoryFilter from "../components/CategoryFilter";
 
@@ -9,8 +10,10 @@ function Shop() {
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
     const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
     useEffect(() => {
   fetchProducts();
+  fetchCategories();
 }, []);
 
 const fetchProducts = async () => {
@@ -21,6 +24,18 @@ const fetchProducts = async () => {
     setProducts(response.data.products || []);
   } catch (error) {
     console.error("Failed to load products:", error);
+  }
+};
+const fetchCategories = async () => {
+  try {
+    const response = await categoryApi.getCategories();
+
+    console.log("CATEGORIES:", response.data);
+
+    setCategories(response.data.categories || []);
+
+  } catch (error) {
+    console.error("Failed to load categories:", error);
   }
 };
     const filteredProducts = products.filter((product) => {
@@ -54,6 +69,7 @@ const fetchProducts = async () => {
         <CategoryFilter
         category={category}
         setCategory={setCategory}
+        categories={categories}
         />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">

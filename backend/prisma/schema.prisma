@@ -18,6 +18,10 @@ model Product {
   stock         Int     @default(0)
   featuredImage String  @default("https://via.placeholder.com/400x400/C9A84C/FFFFFF?text=ABRISH")
   category      String
+  categoryId    String?
+  categoryRef   Category? @relation(fields: [categoryId], references: [id])
+  brand         String?
+  collection    String?
   status        String  @default("Draft")
 
   averageRating Float @default(0)
@@ -30,6 +34,7 @@ model Product {
 
   images  Image[]
   ratings Rating[]
+  variants ProductVariant[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -54,11 +59,47 @@ model Rating {
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
+model ProductVariant {
+  id          String   @id @default(cuid())
+
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  color       String
+  size        String
+
+  sku         String?  @unique
+  barcode     String?
+
+  price       Float
+  salePrice   Float    @default(0)
+
+  stock       Int      @default(0)
+
+  image       String?
+
+  status      String   @default("Active")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 model Category {
   id          String   @id @default(cuid())
   name        String   @unique
   slug        String   @unique
   image       String?
+  description String?
+  status      String   @default("Active")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  products    Product[]
+}
+model Brand {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  logo        String?
   description String?
   status      String   @default("Active")
 

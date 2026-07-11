@@ -1,3 +1,4 @@
+import OrganizationTab from "./product-form/OrganizationTab";
 const ProductForm = ({
   name,
   setName,
@@ -14,6 +15,9 @@ const ProductForm = ({
   category,
   setCategory,
   categories,
+  brand,
+  setBrand,
+  brands,
   description,
   setDescription,
   stock,
@@ -28,19 +32,17 @@ const ProductForm = ({
         {editingId ? "✏️ Edit Product" : "➕ Add New Product"}
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <select
-  value={category}
-  onChange={(e) => setCategory(e.target.value)}
-  className="bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500"
->
-  <option value="">Select Category</option>
+        <OrganizationTab
+  category={category}
+  setCategory={setCategory}
+  categories={categories}
 
-  {categories.map((cat) => (
-    <option key={cat.id} value={cat.name}>
-      {cat.name}
-    </option>
-  ))}
-</select>
+
+  brand={brand}
+  setBrand={setBrand}
+  brands={brands}
+
+/>
         <input
           type="number"
           placeholder="Price *"

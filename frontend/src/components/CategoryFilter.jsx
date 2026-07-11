@@ -1,15 +1,12 @@
-function CategoryFilter({ category, setCategory }) {
-const categories = [
-"All",
-"Men",
-"Women",
-"Shoes",
-"Accessories",
-];
+function CategoryFilter({
+  category,
+  setCategory,
+  categories,
+}) {
 
 return ( <div className="flex justify-center flex-wrap gap-4 mb-12">
 
-  {categories.map((item) => (
+  {["All", ...categories.map((cat) => cat.name)].map((item) => (
     <button
       key={item}
       onClick={() => setCategory(item)}

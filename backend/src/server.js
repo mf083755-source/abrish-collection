@@ -9,6 +9,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 import productRoutes from './routes/productRoutes.js';
 import categoryRoutes from "./routes/categoryRoutes.js";
+import brandRoutes from "./routes/brandRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 
 // ES Module fix for __dirname
@@ -50,6 +51,7 @@ app.use("/uploads", express.static(uploadsPath));
 // Products API
 app.use('/api/products', productRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/brands", brandRoutes);
 app.use("/api/upload", uploadRoutes);
 
 // Health Check

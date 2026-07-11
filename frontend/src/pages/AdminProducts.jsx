@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { productApi } from "../api/productApi";
 import { categoryApi } from "../api/categoryApi";
+import { brandApi } from "../api/brandApi";
 import DashboardCards from "../components/admin/DashboardCards";
 import ProductForm from "../components/admin/ProductForm";
 import ProductSearch from "../components/admin/ProductSearch";
@@ -9,6 +10,8 @@ import ProductTable from "../components/admin/ProductTable";
 function AdminProducts() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [brand, setBrand] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -56,10 +59,19 @@ function AdminProducts() {
     console.error("Category Error:", err);
   }
 };
+const fetchBrands = async () => {
+  try {
+    const response = await brandApi.getBrands();
+    setBrands(response.data.brands || []);
+  } catch (err) {
+    console.error("Brand Error:", err);
+  }
+};
 
   useEffect(() => {
   fetchProducts();
   fetchCategories();
+  fetchBrands();
 }, []);
   const resetForm = () => {
     setEditingId(null);
@@ -240,8 +252,6 @@ if (imageFile) {
   setDescription={setDescription}
   stock={stock}
   setStock={setStock}
-  salePrice={salePrice}
-  setSalePrice={setSalePrice}
   addProduct={addProduct}
   editingId={editingId}
   resetForm={resetForm}

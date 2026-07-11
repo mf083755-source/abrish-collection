@@ -1,5 +1,6 @@
 import AdminLogin from "./pages/AdminLogin";
 import AdminCategories from "./pages/AdminCategories";
+import AdminBrands from "./pages/AdminBrands";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
@@ -39,6 +40,10 @@ function App() {
            path="/admin-categories"
           element={<AdminCategories />}
          />
+         <Route
+  path="/admin-brands"
+  element={<AdminBrands />}
+/>
       </Routes>
     </BrowserRouter>
   );
