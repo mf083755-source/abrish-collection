@@ -1,16 +1,19 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
 import {
-FaSearch,
-FaHeart,
-FaShoppingBag,
-FaUser,
+  FaSearch,
+  FaHeart,
+  FaShoppingBag,
+  FaUser,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
-
 function Header() {
 const { cartItems } = useCart();
 const { wishlistItems } = useWishlist();
+const [menuOpen, setMenuOpen] = useState(false);
 
 const cartCount = cartItems.reduce(
 (total, item) => total + item.quantity,
@@ -65,6 +68,18 @@ return ( <header className="sticky top-0 z-50 bg-black/95 backdrop-blur-md borde
 </Link>
 
       </nav>
+      <button
+  onClick={() => setMenuOpen(!menuOpen)}
+  className="lg:hidden text-white text-2xl"
+>
+  {menuOpen ? <FaTimes /> : <FaBars />}
+</button>
+      <Link
+  to="/admin-login"
+  className="lg:hidden bg-yellow-500 text-black px-3 py-2 rounded-lg text-sm font-bold"
+>
+  Admin
+</Link>
 
       <div className="flex items-center gap-6 text-white text-xl">
 
@@ -95,6 +110,35 @@ return ( <header className="sticky top-0 z-50 bg-black/95 backdrop-blur-md borde
       </div>
 
     </div>
+    {menuOpen && (
+  <div className="lg:hidden bg-black border-t border-yellow-700 py-4">
+
+    <div className="flex flex-col space-y-4 px-6">
+
+      <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
+
+      <Link to="/shop" onClick={() => setMenuOpen(false)}>Shop</Link>
+
+      <Link to="/collections" onClick={() => setMenuOpen(false)}>Collections</Link>
+
+      <Link to="/new-arrivals" onClick={() => setMenuOpen(false)}>New Arrivals</Link>
+
+      <Link to="/about" onClick={() => setMenuOpen(false)}>About</Link>
+
+      <Link to="/contact" onClick={() => setMenuOpen(false)}>Contact</Link>
+
+      <Link
+        to="/admin-login"
+        onClick={() => setMenuOpen(false)}
+        className="bg-yellow-500 text-black text-center py-3 rounded-lg font-bold"
+      >
+        Admin Login
+      </Link>
+
+    </div>
+
+  </div>
+)}
 
   </div>
 </header>
