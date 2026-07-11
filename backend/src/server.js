@@ -68,23 +68,15 @@ app.get('/api/test', (req, res) => {
 });
 
 // ============================================
-// SERVE FRONTEND (Production)
+// ROOT ROUTE
 // ============================================
 
-// Serve Frontend Static Files
-const frontendDistPath = path.join(__dirname, '../../frontend/dist');
-app.use(express.static(frontendDistPath));
-
-// All non-API routes go to index.html (React Router)
-app.use((req, res, next) => {
-  // Skip API routes
-  if (req.path.startsWith('/api/')) {
-    return next();
-  }
-  // Send index.html for all other routes
-  res.sendFile(path.join(frontendDistPath, 'index.html'));
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "Abrish Collection Backend API",
+  });
 });
-
 // ============================================
 // ERROR HANDLER
 // ============================================
