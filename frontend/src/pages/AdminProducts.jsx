@@ -90,6 +90,12 @@ const fetchBrands = async () => {
   };
 
   const addProduct = async () => {
+    console.log("===== PRODUCT DEBUG =====");
+console.log("Name:", name);
+console.log("Price:", price);
+console.log("Category:", category);
+console.log("Brand:", brand);
+console.log("=========================");
   if (!name || !price || !category) {
     alert("Please fill required fields.");
     return;

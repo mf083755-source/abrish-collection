@@ -11,4 +11,11 @@ export const categoryApi = {
 
   deleteCategory: (id) =>
     api.delete(`/categories/${id}`),
+
+  uploadImage: (formData) =>
+    api.post("/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }),
 };

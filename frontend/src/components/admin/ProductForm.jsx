@@ -43,6 +43,13 @@ const ProductForm = ({
   brands={brands}
 
 />
+<input
+  type="text"
+  placeholder="Product Name *"
+  value={name}
+  onChange={(e) => setName(e.target.value)}
+  className="bg-black border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-yellow-500 placeholder-gray-500"
+/>
         <input
           type="number"
           placeholder="Price *"

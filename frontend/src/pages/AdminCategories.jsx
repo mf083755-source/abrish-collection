@@ -6,6 +6,11 @@ function AdminCategories() {
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
   const [editingId, setEditingId] = useState(null);
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("Active");
+
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState("");
 
   const loadCategories = async () => {
     try {
@@ -28,19 +33,39 @@ function AdminCategories() {
 
   try {
 
-    if (editingId) {
-      await categoryApi.updateCategory(editingId, {
-        name,
-      });
-    } else {
-      await categoryApi.createCategory({
-        name,
-      });
-    }
+    let uploadedImage = preview;
+
+if (imageFile) {
+  const formData = new FormData();
+  formData.append("image", imageFile);
+
+  const uploadResponse = await categoryApi.uploadImage(formData);
+
+  uploadedImage =
+    "http://localhost:5000" + uploadResponse.data.imageUrl;
+}
+
+const categoryData = {
+  name,
+  description,
+  status,
+  image: uploadedImage,
+};
+
+if (editingId) {
+  await categoryApi.updateCategory(editingId, categoryData);
+} else {
+  await categoryApi.createCategory(categoryData);
+}
 
     setName("");
-    setEditingId(null);
-    loadCategories();
+setDescription("");
+setStatus("Active");
+setImageFile(null);
+setPreview("");
+setEditingId(null);
+
+loadCategories();
 
   } catch (err) {
     console.error(err);
@@ -49,6 +74,9 @@ function AdminCategories() {
 const editCategory = (cat) => {
   setEditingId(cat.id);
   setName(cat.name);
+  setDescription(cat.description || "");
+  setStatus(cat.status || "Active");
+  setPreview(cat.image || "");
 };
 
 const deleteCategory = async (id) => {
@@ -75,9 +103,46 @@ const deleteCategory = async (id) => {
           placeholder="Category Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full bg-black border border-zinc-700 rounded-xl p-3 text-white"
+          className="w-full bg-black border border-zinc-700 rounded-xl p-3 text-white mb-4"
         />
+        <textarea
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="w-full bg-black border border-zinc-700 rounded-xl p-3 text-white mb-4"
+        />
+        <select
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+          className="w-full bg-black border border-zinc-700 rounded-xl p-3 text-white mb-4"
+        >
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0] || null;
+            setImageFile(file);
 
+            if (file) {
+              const reader = new FileReader();
+              reader.onloadend = () => setPreview(reader.result);
+              reader.readAsDataURL(file);
+            } else {
+              setPreview("");
+            }
+          }}
+          className="w-full text-white mb-4"
+        />
+        {preview && (
+          <img
+            src={preview}
+            alt="Preview"
+            className="mb-4 h-40 w-auto object-cover rounded-xl"
+          />
+        )}
         <button
           onClick={saveCategory}
           className="mt-4 bg-yellow-500 text-black px-6 py-3 rounded-xl font-bold"
@@ -95,10 +160,12 @@ const deleteCategory = async (id) => {
 
             <tr>
 
-              <th className="p-4 text-left">Name</th>
+              <th className="p-4 text-left">Image</th>
 
-              <th className="p-4 text-left">Status</th>
-              <th className="p-4 text-left">Action</th>
+                <th className="p-4 text-left">Name</th>
+                <th className="p-4 text-left">Description</th>
+                <th className="p-4 text-left">Status</th>
+                <th className="p-4 text-left">Action</th>
 
             </tr>
 
@@ -113,9 +180,22 @@ const deleteCategory = async (id) => {
                 className="border-t border-zinc-800"
               >
 
-                <td className="p-4">
-                  {cat.name}
-                </td>
+                <>
+  <td className="p-4">
+    <img
+      src={
+        cat.image ||
+        "https://via.placeholder.com/60x60?text=No+Image"
+      }
+      alt={cat.name}
+      className="w-16 h-16 rounded-lg object-cover"
+    />
+  </td>
+
+  <td className="p-4">
+    {cat.name}
+  </td>
+</>
 
                 <td className="p-4 text-green-500">
                   {cat.status}

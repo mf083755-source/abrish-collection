@@ -52,9 +52,8 @@ function ProductCard({ id, image, name, price }) {
           >
             ♥ Wishlist
           </button>
-
+          
           <Link
-            to={`/product/${id}`}
             className="text-center border border-white/20 text-white py-3 rounded-xl hover:border-yellow-500"
           >
             View Product

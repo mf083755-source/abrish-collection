@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import ProductCard from "../components/ProductCard";
 import { productApi } from "../api/productApi";
@@ -11,10 +12,18 @@ function Shop() {
     const [category, setCategory] = useState("All");
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
+
+    const [searchParams] = useSearchParams();
     useEffect(() => {
   fetchProducts();
   fetchCategories();
-}, []);
+
+  const selectedCategory = searchParams.get("category");
+
+  if (selectedCategory) {
+    setCategory(selectedCategory);
+  }
+}, [searchParams]);
 
 const fetchProducts = async () => {
   try {
