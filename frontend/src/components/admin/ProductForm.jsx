@@ -1,4 +1,6 @@
 import OrganizationTab from "./product-form/OrganizationTab";
+import { useState } from "react";
+import ProductVariantTab from "./product-form/ProductVariantTab";
 const ProductForm = ({
   name,
   setName,
@@ -26,6 +28,17 @@ const ProductForm = ({
   editingId,
   resetForm,
 }) => {
+  const [variants, setVariants] = useState([
+    {
+      color: "",
+      size: "",
+      sku: "",
+      price: "",
+      salePrice: "",
+      stock: "",
+      images: [],
+    },
+  ]);
   return (
     <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 mb-8">
       <h3 className="text-xl font-bold mb-4 text-yellow-500">
@@ -107,6 +120,10 @@ const ProductForm = ({
           rows="3"
         />
       </div>
+      <ProductVariantTab
+    variants={variants}
+    setVariants={setVariants}
+/>
       <div className="flex flex-wrap gap-4 mt-4">
         <button
           onClick={addProduct}
