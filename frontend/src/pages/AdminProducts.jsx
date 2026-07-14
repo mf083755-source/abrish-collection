@@ -110,12 +110,15 @@ if (imageFile) {
   console.log("Uploading image...");
   const uploadResponse = await productApi.uploadImage(formData);
   console.log("UPLOAD RESPONSE:", uploadResponse.data);
-  console.log("IMAGE URL:", "http://localhost:5000" + uploadResponse.data.imageUrl);
+  console.log(
+  "IMAGE URL:",
+  "https://abrish-collection.onrender.com" + uploadResponse.data.imageUrl
+);
   console.log(uploadResponse.data);
   console.log("UPLOAD RESPONSE:", uploadResponse.data);
 
   uploadedImage =
-    "http://localhost:5000" + uploadResponse.data.imageUrl;
+    "https://abrish-collection.onrender.com" + uploadResponse.data.imageUrl;
 }
   const productData = {
     title: name,
@@ -124,7 +127,7 @@ if (imageFile) {
     sku,
     featuredImage:
   uploadedImage ||
-  "https://via.placeholder.com/400x400/C9A84C/FFFFFF?text=ABRISH",
+  "https://abrish-collection.onrender.com/images/placeholder.jpg",
     category,
     brand,
     description,
